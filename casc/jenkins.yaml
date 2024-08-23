@@ -1,0 +1,17 @@
+jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
+  numExecutors: 1
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - basicSSHUserPrivateKey:
+            description: "The Jenkins ssh key"
+            scope: SYSTEM
+            id: jenkins
+            username: jenkins
+            privateKeySource:
+              directEntry:
+                privateKey: "${readFile:/mnt/shared/jenkins-agent-ssh}"
+

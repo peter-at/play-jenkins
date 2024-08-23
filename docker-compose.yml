@@ -1,0 +1,22 @@
+
+volumes:
+  jenkins-data:
+
+networks:
+  jenkins-net:
+
+services:
+  jenkins-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    networks:
+      - jenkins-net
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - ./shared-mnt:/mnt/shared
+      - ./casc/jenkins.yaml:/var/jenkins_home/jenkins.yaml:ro
+
