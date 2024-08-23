@@ -1,7 +1,3 @@
-jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
-  numExecutors: 1
-
 credentials:
   system:
     domainCredentials:
@@ -15,3 +11,24 @@ credentials:
               directEntry:
                 privateKey: "${readFile:/mnt/shared/jenkins-agent-ssh}"
 
+jenkins:
+  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
+  numExecutors: 0
+  nodes:
+    - permanent:
+        labelString: "docker-proxy docker"
+        mode: NORMAL
+        name: "dind-1"
+        numExecutors: 2
+        remoteFS: "/home/jenkins"
+        launcher:
+          ssh:
+            host: "jenkins-agent"
+            port: 22
+            credentialsId: jenkins
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTime: 30
+            sshHostKeyVerificationStrategy:
+              manuallyTrustedKeyVerificationStrategy:
+                requireInitialManualTrust: false

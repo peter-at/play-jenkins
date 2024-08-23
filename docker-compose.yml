@@ -10,6 +10,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.server
+    depends_on:
+      jenkins-agent:
+        condition: service_started
     ports:
       - "8080:8080"
       - "50000:50000"
@@ -17,6 +20,20 @@ services:
       - jenkins-net
     volumes:
       - jenkins-data:/var/jenkins_home
-      - ./shared-mnt:/mnt/shared
-      - ./casc/jenkins.yaml:/var/jenkins_home/jenkins.yaml:ro
+      - ${PWD}/shared-mnt:/mnt/shared
+      - ${PWD}/casc/jenkins.yaml:/var/jenkins_home/jenkins.yaml:ro
+
+  jenkins-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent
+    environment:
+      JENKINS_AGENT_SSH_PUBKEY: "${JENKINS_AGENT_SSH_PUBKEY}"
+    ports:
+      - "2201:22"
+    networks:
+      - jenkins-net
+    volumes:
+      - ${PWD}/shared-mnt:/mnt/shared
+      - /var/run/docker.sock:/var/run/docker.sock
 
